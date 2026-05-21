@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Матвей — Дизайн & Разработка сайтов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --glass-bg: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.14);
+    --glass-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    --glass-blur: blur(24px) saturate(180%);
+    --accent: #7DF9C8;
+    --accent2: #A78BFA;
+    --accent3: #F472B6;
+    --text: #F0F0F0;
+    --muted: rgba(240,240,240,0.5);
+    --bg-deep: #060812;
+    --radius-lg: 24px;
+    --radius-xl: 36px;
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ===== BACKGROUND ===== */
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  }
+  .bg-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.45;
+    animation: orbFloat 12s ease-in-out infinite alternate;
+  }
+  .bg-orb:nth-child(1) { width: 600px; height: 600px; background: radial-gradient(circle, #4F46E5, transparent 70%); top: -100px; left: -150px; animation-delay: 0s; }
+  .bg-orb:nth-child(2) { width: 500px; height: 500px; background: radial-gradient(circle, #7C3AED, transparent 70%); top: 20%; right: -100px; animation-delay: -4s; }
+  .bg-orb:nth-child(3) { width: 400px; height: 400px; background: radial-gradient(circle, #0EA5E9, transparent 70%); bottom: 10%; left: 20%; animation-delay: -8s; }
+  .bg-orb:nth-child(4) { width: 350px; height: 350px; background: radial-gradient(circle, #EC4899, transparent 70%); bottom: -50px; right: 10%; animation-delay: -2s; }
+  .bg-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  @keyframes orbFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(30px, 40px) scale(1.08); } }
+
+  /* ===== GLASS MIXIN ===== */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    border-radius: 100px;
+    background: rgba(10,10,20,0.7);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    width: calc(100% - 32px);
+    max-width: 900px;
+    transition: all 0.3s ease;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  .nav-links {
+    display: flex; gap: 4px; list-style: none; margin-left: auto; align-items: center;
+  }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 500;
+    padding: 6px 12px; border-radius: 100px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--accent), #3BFAA0) !important;
+    color: #050810 !important;
+    font-weight: 600 !important;
+    padding: 7px 16px !important;
+    -webkit-text-fill-color: #050810 !important;
+    flex-shrink: 0;
+    transition: all 0.2s ease !important;
+  }
+  .nav-cta:hover { transform: scale(1.04) !important; opacity: 0.9; }
+  .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .nav-burger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 4px 0; border-radius: 2px; transition: all 0.3s; }
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(6,8,18,0.97);
+    backdrop-filter: blur(30px);
+    flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-display); font-size: 24px; font-weight: 600;
+    color: var(--text); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+  .mobile-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: none; color: var(--text); font-size: 28px; cursor: pointer;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { position: relative; z-index: 1; }
+
+  /* ===== HERO ===== */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 24px 80px;
+    text-align: center;
+    gap: 32px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 100px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(125,249,200,0.25);
+    background: rgba(125,249,200,0.07);
+    animation: fadeInUp 0.8s ease both;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    animation: fadeInUp 0.8s 0.15s ease both;
+  }
+  .hero-title .line1 { display: block; color: var(--text); }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradShift 4s ease infinite, fadeInUp 0.8s 0.3s ease both;
+  }
+  @keyframes gradShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+  .hero-sub {
+    max-width: 540px;
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.7;
+    color: var(--muted);
+    animation: fadeInUp 0.8s 0.45s ease both;
+  }
+
+  .hero-btns {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    animation: fadeInUp 0.8s 0.6s ease both;
+  }
+  .btn-primary {
+    padding: 14px 28px; border-radius: 100px;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), #3BFAA0);
+    color: #050810; border: none; cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none; display: inline-block;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 12px 30px rgba(125,249,200,0.35); }
+  .btn-secondary {
+    padding: 13px 28px; border-radius: 100px;
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    color: var(--text); cursor: pointer;
+    transition: all 0.25s ease; text-decoration: none; display: inline-block;
+    letter-spacing: 0.02em;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+  .hero-stats {
+    display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+    animation: fadeInUp 0.8s 0.75s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--font-display); font-size: 36px; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    animation: fadeInUp 1s 1.2s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.2)} }
+
+  /* ===== SERVICES ===== */
+  #services { padding: 100px 24px; }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .section-tag {
+    display: inline-block; padding: 6px 16px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent2); border: 1px solid rgba(167,139,250,0.25);
+    background: rgba(167,139,250,0.07); margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: var(--font-display); font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+  }
+  .section-desc { font-size: 16px; color: var(--muted); margin-top: 16px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; max-width: 1200px; margin: 0 auto;
+  }
+  .service-card {
+    padding: 32px; border-radius: var(--radius-lg);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative; overflow: hidden; cursor: default;
+  }
+  .service-card::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    background: linear-gradient(135deg, rgba(125,249,200,0.05), rgba(167,139,250,0.05));
+    opacity: 0; transition: opacity 0.35s;
+  }
+  .service-card:hover { transform: translateY(-6px); border-color: rgba(125,249,200,0.25); }
+  .service-card:hover::before { opacity: 1; }
+  .service-card:hover .service-glow { opacity: 1; }
+  .service-glow {
+    position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(125,249,200,0.15), transparent);
+    opacity: 0; transition: opacity 0.35s; pointer-events: none;
+  }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 14px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, rgba(125,249,200,0.15), rgba(167,139,250,0.15));
+    border: 1px solid rgba(125,249,200,0.2);
+  }
+  .service-name {
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    margin-bottom: 12px; letter-spacing: -0.02em;
+  }
+  .service-desc { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted); transition: all 0.2s;
+  }
+  .service-card:hover .tag { background: rgba(125,249,200,0.08); border-color: rgba(125,249,200,0.2); color: var(--accent); }
+
+  /* ===== PORTFOLIO ===== */
+  #portfolio { padding: 100px 24px; }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px; max-width: 1200px; margin: 0 auto;
+  }
+  .project-card {
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+  }
+  .project-card:hover { transform: translateY(-8px) scale(1.01); border-color: rgba(125,249,200,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(125,249,200,0.1); }
+  .project-thumb {
+    width: 100%; aspect-ratio: 16/10;
+    background: linear-gradient(135deg, #1a1040, #0d1a2e);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .project-thumb .thumb-label {
+    font-family: var(--font-display); font-size: clamp(11px,2vw,14px);
+    font-weight: 700; color: rgba(255,255,255,0.25);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    transition: color 0.3s;
+  }
+  .project-card:hover .thumb-label { color: rgba(125,249,200,0.5); }
+  .project-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(79,70,229,0.35), rgba(124,58,237,0.25));
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .project-card:hover .project-overlay { opacity: 1; }
+  .project-overlay-btn {
+    padding: 10px 22px; border-radius: 100px;
+    background: rgba(125,249,200,0.9); color: #050810;
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+    border: none; cursor: pointer;
+    transform: translateY(10px); transition: transform 0.3s;
+  }
+  .project-card:hover .project-overlay-btn { transform: translateY(0); }
+  .project-info { padding: 24px; }
+  .project-cat {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 8px;
+  }
+  .project-title {
+    font-family: var(--font-display); font-size: 17px; font-weight: 700;
+    margin-bottom: 8px; letter-spacing: -0.02em;
+  }
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .project-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* Thumb visuals */
+  .thumb-v1 { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+  .thumb-v2 { background: linear-gradient(135deg, #0a1628, #1a2a4a, #0d2137); }
+  .thumb-v3 { background: linear-gradient(135deg, #1a0530, #2d1b4e, #0d0318); }
+  .thumb-v4 { background: linear-gradient(135deg, #071a0a, #0d3018, #071a0a); }
+  .thumb-v5 { background: linear-gradient(135deg, #1a0010, #3d0020, #1a0010); }
+  .thumb-v6 { background: linear-gradient(135deg, #080c1a, #141c38, #080c1a); }
+  .thumb-deco {
+    position: absolute; border-radius: 50%;
+    filter: blur(30px); pointer-events: none;
+  }
+
+  /* add project CTA */
+  .add-project-card {
+    border-radius: var(--radius-lg);
+    border: 2px dashed rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 300px; gap: 16px;
+    cursor: pointer; transition: all 0.3s;
+    padding: 24px;
+  }
+  .add-project-card:hover { border-color: rgba(125,249,200,0.35); background: rgba(125,249,200,0.03); }
+  .add-icon {
+    width: 56px; height: 56px; border-radius: 50%; border: 2px dashed rgba(125,249,200,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--accent); transition: all 0.3s;
+  }
+  .add-project-card:hover .add-icon { background: rgba(125,249,200,0.1); transform: scale(1.1); }
+  .add-label { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--muted); text-align: center; }
+  .add-sub { font-size: 12px; color: rgba(240,240,240,0.3); text-align: center; line-height: 1.5; }
+
+  /* Portfolio guide banner */
+  .guide-banner {
+    max-width: 1200px; margin: 40px auto 0;
+    padding: 24px 32px; border-radius: var(--radius-lg);
+    background: rgba(125,249,200,0.06); border: 1px solid rgba(125,249,200,0.15);
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .guide-icon { font-size: 24px; flex-shrink: 0; }
+  .guide-text h4 { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+  .guide-text p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .guide-text code {
+    background: rgba(125,249,200,0.1); padding: 2px 7px; border-radius: 4px;
+    font-size: 12px; color: var(--accent); font-family: monospace;
+  }
+
+  /* ===== PRICING ===== */
+  #pricing { padding: 100px 24px; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; max-width: 1200px; margin: 0 auto; align-items: start;
+  }
+  .pricing-card {
+    padding: 36px 32px; border-radius: var(--radius-xl);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+  }
+  .pricing-card:hover { transform: translateY(-6px); }
+  .pricing-card.featured {
+    background: linear-gradient(145deg, rgba(125,249,200,0.1), rgba(167,139,250,0.08));
+    border-color: rgba(125,249,200,0.3);
+    box-shadow: 0 0 0 1px rgba(125,249,200,0.15), var(--glass-shadow);
+  }
+  .pricing-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), #3BFAA0);
+    color: #050810; font-size: 11px; font-weight: 800;
+    padding: 5px 16px; border-radius: 100px;
+    letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+  }
+  .plan-name {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .plan-price {
+    font-family: var(--font-display); font-size: 40px; font-weight: 900;
+    letter-spacing: -0.03em; line-height: 1;
+    margin-bottom: 6px;
+  }
+  .plan-price .currency { font-size: 20px; font-weight: 600; vertical-align: super; }
+  .plan-price .period { font-size: 14px; color: var(--muted); font-weight: 400; }
+  .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+  .plan-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .plan-features li {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13.5px; color: var(--text); line-height: 1.5;
+  }
+  .plan-features li::before {
+    content: '✓'; flex-shrink: 0;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(125,249,200,0.15); border: 1px solid rgba(125,249,200,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--accent);
+  }
+  .pricing-card.custom .plan-price { font-size: 22px; }
+  .plan-custom-note {
+    font-size: 12px; color: var(--muted); margin-bottom: 20px;
+    padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08); line-height: 1.6;
+  }
+
+  /* ===== PROCESS ===== */
+  #process { padding: 100px 24px; }
+  .process-steps {
+    max-width: 900px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .process-line {
+    position: absolute; left: 28px; top: 60px; bottom: 60px;
+    width: 1px; background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    opacity: 0.3;
+  }
+  .process-step {
+    display: flex; gap: 24px; padding: 28px 28px 28px 0;
+    position: relative;
+  }
+  .step-num {
+    width: 56px; height: 56px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 16px; font-weight: 800;
+    background: linear-gradient(135deg, rgba(125,249,200,0.12), rgba(167,139,250,0.08));
+    border-color: rgba(125,249,200,0.2);
+    color: var(--accent);
+    position: relative; z-index: 1;
+  }
+  .step-body { padding-top: 12px; }
+  .step-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* ===== ABOUT ===== */
+  #about { padding: 100px 24px; }
+  .about-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .about-visual {
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .about-card-main {
+    width: 100%; max-width: 380px;
+    padding: 40px; border-radius: var(--radius-xl);
+    background: linear-gradient(145deg, rgba(125,249,200,0.08), rgba(167,139,250,0.06));
+    border: 1px solid rgba(125,249,200,0.2);
+    backdrop-filter: blur(30px);
+    text-align: center; position: relative; z-index: 1;
+  }
+  .about-avatar {
+    width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 28px; font-weight: 800; color: #050810;
+    box-shadow: 0 8px 30px rgba(125,249,200,0.3);
+  }
+  .about-name { font-family: var(--font-display); font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+  .about-role { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .about-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .skill-pill {
+    padding: 8px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px; font-weight: 600; text-align: center;
+    transition: all 0.2s;
+  }
+  .skill-pill:hover { background: rgba(125,249,200,0.1); border-color: rgba(125,249,200,0.25); color: var(--accent); }
+  .about-float-badge {
+    position: absolute;
+    padding: 12px 16px; border-radius: 14px;
+    font-size: 12px; font-weight: 600;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--glass-shadow);
+  }
+  .about-float-badge.f1 {
+    top: -20px; right: -10px;
+    background: rgba(125,249,200,0.12); border: 1px solid rgba(125,249,200,0.25);
+    color: var(--accent);
+    animation: floatAnim 4s ease-in-out infinite;
+  }
+  .about-float-badge.f2 {
+    bottom: -10px; left: -20px;
+    background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25);
+    color: var(--accent2);
+    animation: floatAnim 5s ease-in-out infinite reverse;
+  }
+  @keyframes floatAnim { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .about-text-side { display: flex; flex-direction: column; gap: 24px; }
+  .about-text-side p { font-size: 16px; color: rgba(240,240,240,0.75); line-height: 1.8; }
+  .about-text-side p strong { color: var(--text); font-weight: 600; }
+  .about-text-side .highlight {
+    padding: 24px; border-radius: 16px;
+    background: rgba(125,249,200,0.06); border: 1px solid rgba(125,249,200,0.15);
+    font-size: 15px; color: var(--accent); font-weight: 500; line-height: 1.7;
+  }
+
+  /* ===== CTA ===== */
+  #contact { padding: 100px 24px 120px; }
+  .cta-box {
+    max-width: 800px; margin: 0 auto; text-align: center;
+    padding: 72px 48px; border-radius: var(--radius-xl);
+    background: linear-gradient(145deg, rgba(125,249,200,0.06), rgba(167,139,250,0.06));
+    border: 1px solid rgba(125,249,200,0.15);
+    backdrop-filter: blur(30px); position: relative; overflow: hidden;
+  }
+  .cta-box::before {
+    content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(125,249,200,0.1), transparent 70%);
+    pointer-events: none;
+  }
+  .cta-box h2 { font-family: var(--font-display); font-size: clamp(28px,4vw,48px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .cta-box p { font-size: 16px; color: var(--muted); margin-bottom: 36px; line-height: 1.7; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .cta-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: 100px;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    text-decoration: none; transition: all 0.25s;
+  }
+  .cta-tg { background: linear-gradient(135deg, #229ED9, #1a8cc1); color: #fff; }
+  .cta-tg:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(34,158,217,0.35); }
+  .cta-wa { background: linear-gradient(135deg, #25D366, #1aaa52); color: #fff; }
+  .cta-wa:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37,211,102,0.35); }
+  .cta-email { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text); backdrop-filter: blur(20px); }
+  .cta-email:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 40px 24px; text-align: center;
+    border-top: 1px solid var(--glass-border);
+    color: var(--muted); font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-burger { display: block; margin-left: auto; }
+    .about-inner { grid-template-columns: 1fr; }
+    .about-visual { order: -1; }
+    .about-card-main { max-width: 100%; }
+    .about-float-badge.f1 { top: -10px; right: 0; }
+    .about-float-badge.f2 { bottom: -10px; left: 0; }
+    .hero-stats { gap: 24px; }
+    .cta-box { padding: 48px 24px; }
+    .guide-banner { flex-direction: column; }
+    .process-line { display: none; }
+    .process-step { padding-left: 0; }
+  }
+  @media (max-width: 480px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Custom thumb decorations */
+  .td1 { width:120px;height:120px;background:rgba(79,70,229,0.4);top:10%;left:10%; }
+  .td2 { width:80px;height:80px;background:rgba(167,139,250,0.3);bottom:15%;right:15%; }
+  .td3 { width:100px;height:100px;background:rgba(14,165,233,0.4);top:20%;right:10%; }
+  .td4 { width:90px;height:90px;background:rgba(124,58,237,0.35);bottom:10%;left:20%; }
+  .td5 { width:110px;height:110px;background:rgba(236,72,153,0.35);top:15%;left:15%; }
+  .td6 { width:85px;height:85px;background:rgba(34,158,217,0.3);bottom:20%;right:20%; }
+
+  .project-thumb-text {
+    font-family: var(--font-display); font-size: clamp(28px,4vw,48px);
+    font-weight: 900; opacity: 0.07; letter-spacing: -0.05em;
+    position: absolute; white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- BG -->
+<div class="bg-canvas">
+  <div class="bg-orb"></div><div class="bg-orb"></div>
+  <div class="bg-orb"></div><div class="bg-orb"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">МАТВЕЙ ⬡</div>
+  <ul class="nav-links">
+    <li><a href="#services">Услуги</a></li>
+    <li><a href="#portfolio">Портфолио</a></li>
+    <li><a href="#pricing">Цены</a></li>
+    <li><a href="#process">Процесс</a></li>
+    <li><a href="#about">Обо мне</a></li>
+    <li><a href="#contact" class="nav-cta">Обсудим проект</a></li>
+  </ul>
+  <button class="nav-burger" id="burgerBtn" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="closeMenu">✕</button>
+  <a href="#services" onclick="closeMobileMenu()">Услуги</a>
+  <a href="#portfolio" onclick="closeMobileMenu()">Портфолио</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Цены</a>
+  <a href="#process" onclick="closeMobileMenu()">Процесс</a>
+  <a href="#about" onclick="closeMobileMenu()">Обо мне</a>
+  <a href="#contact" onclick="closeMobileMenu()" style="color:var(--accent)">Обсудим проект →</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge">📍 Шымкент · Работаю с клиентами по всему миру</div>
+  <h1 class="hero-title">
+    <span class="line1">Создаю сайты,</span>
+    <span class="line2">которые продают</span>
+  </h1>
+  <p class="hero-sub">Дизайн и разработка сайтов любой сложности. От лендинга до полноценного веб-приложения — с душой, стратегией и красивым кодом.</p>
+  <div class="hero-btns">
+    <a href="#portfolio" class="btn-primary">Смотреть работы</a>
+    <a href="#contact" class="btn-secondary">Написать мне →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">Проектов сдано</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3+</div>
+      <div class="stat-label">Года в дизайне</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Довольных клиентов</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>скролл</span>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header reveal">
+    <div class="section-tag">Что я делаю</div>
+    <h2 class="section-title">Полный спектр<br>веб-услуг</h2>
+    <p class="section-desc">От идеи до запущенного сайта — веду проект на каждом этапе</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-glow"></div>
+      <div class="service-icon">🎨</div>
+      <div class="service-name">UI/UX Дизайн</div>
+      <p class="service-desc">Разрабатываю интерфейсы, которые не просто красиво выглядят — они интуитивно понятны и конвертируют посетителей в клиентов.</p>
+      <div class="service-tags">
+        <span class="tag">Figma</span><span class="tag">Прототипирование</span><span class="tag">Анимации</span>
+      </div>
+    </div>
+    <div class="service-card reveal" style="animation-delay:0.1s">
+      <div class="service-glow"></div>
+      <div class="service-icon">💻</div>
+      <div class="service-name">Разработка сайтов</div>
+      <p class="service-desc">Верстаю и программирую сайты — от простых лендингов до сложных многостраничных платформ с интеграциями и CMS.</p>
+      <div class="service-tags">
+        <span class="tag">HTML/CSS/JS</span><span class="tag">React</span><span class="tag">WordPress</span>
+      </div>
+    </div>
+    <div class="service-card reveal" style="animation-delay:0.2s">
+      <div class="service-glow"></div>
+      <div class="service-icon">🚀</div>
+      <div class="service-name">No-code / Tilda</div>
+      <p class="service-desc">Быстрый запуск без лишних затрат. Профессиональные сайты на no-code платформах с кастомизацией под любые задачи.</p>
+      <div class="service-tags">
+        <span class="tag">Tilda</span><span class="tag">Webflow</span><span class="tag">Быстрый старт</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-glow"></div>
+      <div class="service-icon">📱</div>
+      <div class="service-name">Мобильная адаптация</div>
+      <p class="service-desc">Каждый сайт идеально работает на телефоне. Адаптивная вёрстка — не опция, а стандарт на всех моих проектах.</p>
+      <div class="service-tags">
+        <span class="tag">Responsive</span><span class="tag">Mobile-first</span><span class="tag">PWA</span>
+      </div>
+    </div>
+    <div class="service-card reveal" style="animation-delay:0.1s">
+      <div class="service-glow"></div>
+      <div class="service-icon">⚡</div>
+      <div class="service-name">Лендинги</div>
+      <p class="service-desc">Продающие страницы с высокой конверсией. Разрабатываю структуру, дизайн и тексты под вашу аудиторию.</p>
+      <div class="service-tags">
+        <span class="tag">Продажи</span><span class="tag">Конверсия</span><span class="tag">A/B тесты</span>
+      </div>
+    </div>
+    <div class="service-card reveal" style="animation-delay:0.2s">
+      <div class="service-glow"></div>
+      <div class="service-icon">🛠</div>
+      <div class="service-name">Поддержка & доработки</div>
+      <p class="service-desc">Веду ваш сайт после запуска — обновления, правки, аналитика, SEO-оптимизация и техническая поддержка.</p>
+      <div class="service-tags">
+        <span class="tag">SEO</span><span class="tag">Поддержка</span><span class="tag">Аналитика</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header reveal">
+    <div class="section-tag">Портфолио</div>
+    <h2 class="section-title">Избранные<br>работы</h2>
+    <p class="section-desc">Каждый проект — это уникальное решение под задачу клиента</p>
+  </div>
+  <div class="portfolio-grid">
+    <!-- Sample Project 1 -->
+    <div class="project-card reveal">
+      <div class="project-thumb thumb-v1">
+        <div class="thumb-deco td1"></div>
+        <div class="thumb-deco td2"></div>
+        <span class="project-thumb-text">WEB</span>
+        <div class="project-overlay"><button class="project-overlay-btn">Смотреть →</button></div>
+        <span class="thumb-label">Проект 1</span>
+      </div>
+      <div class="project-info">
+        <div class="project-cat">Лендинг · Дизайн + Разработка</div>
+        <div class="project-title">Пример — Корпоративный лендинг</div>
+        <p class="project-desc">Описание проекта. Замените на реальный кейс с результатами и задачей.</p>
+        <div class="project-meta">
+          <span class="tag">Figma</span><span class="tag">HTML/CSS</span><span class="tag">JS</span>
+        </div>
+      </div>
+    </div>
+    <!-- Sample Project 2 -->
+    <div class="project-card reveal" style="animation-delay:0.1s">
+      <div class="project-thumb thumb-v2">
+        <div class="thumb-deco td3"></div>
+        <div class="thumb-deco td4"></div>
+        <span class="project-thumb-text">BRAND</span>
+        <div class="project-overlay"><button class="project-overlay-btn">Смотреть →</button></div>
+        <span class="thumb-label">Проект 2</span>
+      </div>
+      <div class="project-info">
+        <div class="project-cat">Сайт-визитка · Дизайн</div>
+        <div class="project-title">Пример — Сайт для бренда</div>
+        <p class="project-desc">Описание проекта. Добавьте скриншот и ссылку на живой сайт.</p>
+        <div class="project-meta">
+          <span class="tag">Tilda</span><span class="tag">UI/UX</span>
+        </div>
+      </div>
+    </div>
+    <!-- Sample Project 3 -->
+    <div class="project-card reveal" style="animation-delay:0.2s">
+      <div class="project-thumb thumb-v3">
+        <div class="thumb-deco td5"></div>
+        <div class="thumb-deco td6"></div>
+        <span class="project-thumb-text">APP</span>
+        <div class="project-overlay"><button class="project-overlay-btn">Смотреть →</button></div>
+        <span class="thumb-label">Проект 3</span>
+      </div>
+      <div class="project-info">
+        <div class="project-cat">Веб-приложение · Full-stack</div>
+        <div class="project-title">Пример — Веб-платформа</div>
+        <p class="project-desc">Описание проекта. Укажите задачу, решение и результат в цифрах.</p>
+        <div class="project-meta">
+          <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">API</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Project Card -->
+    <div class="add-project-card reveal" style="animation-delay:0.3s" id="addProjectCard">
+      <div class="add-icon">+</div>
+      <div class="add-label">Здесь будут ваши работы</div>
+      <div class="add-sub">Просто замените placeholder-карточки<br>на свои реальные проекты</div>
+    </div>
+  </div>
+
+  <!-- How to add projects -->
+  <div class="guide-banner reveal">
+    <div class="guide-icon">💡</div>
+    <div class="guide-text">
+      <h4>Как добавить свои работы в портфолио?</h4>
+      <p>
+        <strong>Скриншоты:</strong> Замените блок <code>.project-thumb</code> тегом <code>&lt;img src="ваш-скриншот.jpg"&gt;</code>. Рекомендуемый размер: <strong>800×500px</strong>.<br><br>
+        <strong>Ссылки:</strong> В атрибуте кнопки <code>.project-overlay-btn</code> добавьте <code>onclick="window.open('https://ваш-сайт.ru')"</code> или оберните карточку в тег <code>&lt;a href="..."&gt;</code>.<br><br>
+        <strong>Видео:</strong> Можно вставить <code>&lt;video autoplay muted loop&gt;</code> внутрь <code>.project-thumb</code> — это смотрится очень эффектно! Размер файла не более 5 МБ.<br><br>
+        <strong>Хостинг изображений:</strong> Загрузите картинки на <a href="https://imgbb.com" target="_blank">imgbb.com</a> или <a href="https://cloudinary.com" target="_blank">Cloudinary</a> и вставьте прямую ссылку. Для хранения файлов рядом с HTML — положите в ту же папку.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-header reveal">
+    <div class="section-tag">Стоимость</div>
+    <h2 class="section-title">Прозрачные<br>цены</h2>
+    <p class="section-desc">Выберите формат сотрудничества, который подходит вашему проекту</p>
+  </div>
+  <div class="pricing-grid">
+    <!-- Plan 1: Hourly -->
+    <div class="pricing-card reveal">
+      <div class="plan-name">Почасовая оплата</div>
+      <div class="plan-price"><span class="currency">от </span>25$<span class="period"> / час</span></div>
+      <p class="plan-desc">Идеально для небольших задач, правок и доработок существующего сайта.</p>
+      <ul class="plan-features">
+        <li>Мелкие правки и доработки</li>
+        <li>Консультации по дизайну</li>
+        <li>Аудит существующего сайта</li>
+        <li>Отчёт о затраченном времени</li>
+        <li>Минимальный заказ — 2 часа</li>
+      </ul>
+      <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;display:block;padding:14px">Обсудить →</a>
+    </div>
+
+    <!-- Plan 2: Fixed (FEATURED) -->
+    <div class="pricing-card featured reveal" style="animation-delay:0.1s">
+      <div class="pricing-badge">🔥 Популярный</div>
+      <div class="plan-name">Фиксированная цена</div>
+      <div class="plan-price"><span class="currency">от </span>300$</div>
+      <p class="plan-desc">Чёткое ТЗ — чёткая цена. Платите один раз, получаете готовый сайт в срок.</p>
+      <ul class="plan-features">
+        <li>Лендинг / многостраничный сайт</li>
+        <li>Дизайн + вёрстка + адаптив</li>
+        <li>2 раунда правок включены</li>
+        <li>Базовая SEO-оптимизация</li>
+        <li>Сдача в срок по договору</li>
+        <li>Поддержка 1 месяц после сдачи</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;text-align:center;display:block;padding:14px">Начать проект →</a>
+    </div>
+
+    <!-- Plan 3: Monthly retainer -->
+    <div class="pricing-card reveal" style="animation-delay:0.2s">
+      <div class="plan-name">Ретейнер</div>
+      <div class="plan-price"><span class="currency">от </span>150$<span class="period"> / мес</span></div>
+      <p class="plan-desc">Выделенное время каждый месяц для вашего проекта. Как свой дизайнер в штате.</p>
+      <ul class="plan-features">
+        <li>Пакет часов ежемесячно</li>
+        <li>Приоритетная поддержка</li>
+        <li>Неограниченные задачи</li>
+        <li>Отчёт каждые 2 недели</li>
+        <li>Скидка на новые проекты</li>
+      </ul>
+      <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;display:block;padding:14px">Обсудить →</a>
+    </div>
+
+    <!-- Plan 4: Under key (Custom) -->
+    <div class="pricing-card custom reveal" style="animation-delay:0.3s">
+      <div class="plan-name">Сайт под ключ</div>
+      <div class="plan-price">Цена<br>по ТЗ</div>
+      <p class="plan-desc">Полный цикл создания сложного проекта — от стратегии до запуска и продвижения.</p>
+      <div class="plan-custom-note">
+        💬 Итоговая стоимость зависит от: объёма страниц, сложности дизайна, интеграций (CRM, оплата, API), нужен ли контент и копирайтинг, сроков реализации. <strong>Обсудите детали — получите точную смету за 24 часа.</strong>
+      </div>
+      <ul class="plan-features">
+        <li>Разработка стратегии и структуры</li>
+        <li>Дизайн-система с нуля</li>
+        <li>Разработка любой сложности</li>
+        <li>CMS, CRM, API-интеграции</li>
+        <li>Контент, тексты, фото</li>
+        <li>SEO, аналитика, настройка рекламы</li>
+        <li>Обучение и передача управления</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;text-align:center;display:block;padding:14px">Получить смету →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header reveal">
+    <div class="section-tag">Как работаю</div>
+    <h2 class="section-title">Процесс<br>от А до Я</h2>
+    <p class="section-desc">Прозрачно, структурировано и без сюрпризов</p>
+  </div>
+  <div class="process-steps">
+    <div class="process-line"></div>
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <div class="step-title">Бриф и погружение</div>
+        <p class="step-desc">Обсуждаем цели, аудиторию и ожидания. Изучаю ваш бизнес, конкурентов и рынок — чтобы сайт решал реальные задачи, а не просто красиво выглядел.</p>
+      </div>
+    </div>
+    <div class="process-step reveal" style="animation-delay:0.1s">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <div class="step-title">Структура и прототип</div>
+        <p class="step-desc">Разрабатываю архитектуру сайта и wireframes. На этом этапе определяем логику, навигацию и пользовательский путь — ещё до того, как появится пиксель дизайна.</p>
+      </div>
+    </div>
+    <div class="process-step reveal" style="animation-delay:0.2s">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <div class="step-title">Дизайн в Figma</div>
+        <p class="step-desc">Создаю уникальный визуал под ваш бренд. Вы получаете дизайн-макеты для согласования и вносите правки до полного удовлетворения.</p>
+      </div>
+    </div>
+    <div class="process-step reveal" style="animation-delay:0.3s">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <div class="step-title">Разработка</div>
+        <p class="step-desc">Верстаю и программирую одобренный дизайн. Пишу чистый, быстрый и масштабируемый код. Регулярно показываю прогресс в live-превью.</p>
+      </div>
+    </div>
+    <div class="process-step reveal" style="animation-delay:0.4s">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <div class="step-title">Тестирование и запуск</div>
+        <p class="step-desc">Проверяю сайт на всех устройствах и браузерах, тестирую скорость и SEO-параметры. После вашего одобрения — запускаем на продакшн.</p>
+      </div>
+    </div>
+    <div class="process-step reveal" style="animation-delay:0.5s">
+      <div class="step-num">06</div>
+      <div class="step-body">
+        <div class="step-title">Поддержка после запуска</div>
+        <p class="step-desc">Остаюсь на связи после сдачи проекта. Помогаю с обновлениями, обучаю пользоваться CMS и готов расширить сайт по мере роста бизнеса.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual reveal">
+      <div class="about-card-main">
+        <div class="about-avatar">М</div>
+        <div class="about-name">Матвей</div>
+        <div class="about-role">Дизайнер & Разработчик · Шымкент, KZ</div>
+        <div class="about-skills-grid">
+          <div class="skill-pill">Figma</div>
+          <div class="skill-pill">React</div>
+          <div class="skill-pill">HTML/CSS</div>
+          <div class="skill-pill">JavaScript</div>
+          <div class="skill-pill">Tilda</div>
+          <div class="skill-pill">Webflow</div>
+          <div class="skill-pill">WordPress</div>
+          <div class="skill-pill">Node.js</div>
+        </div>
+      </div>
+      <div class="about-float-badge f1">✦ Доступен для проектов</div>
+      <div class="about-float-badge f2">⚡ Быстрый отклик 24ч</div>
+    </div>
+    <div class="about-text-side reveal">
+      <div class="section-tag" style="display:inline-block;margin-bottom:16px">Обо мне</div>
+      <h2 class="section-title" style="text-align:left;font-size:clamp(28px,3.5vw,44px)">Привет,<br>я Матвей 👋</h2>
+      <p>Занимаюсь <strong>дизайном и разработкой сайтов</strong> — от простых лендингов до сложных веб-платформ. Работаю с клиентами из Казахстана, России и других стран.</p>
+      <p>Для меня сайт — это не просто красивая картинка. Это <strong>инструмент вашего бизнеса</strong>, который должен привлекать клиентов, строить доверие и продавать 24/7.</p>
+      <div class="highlight">
+        «Каждый проект я делаю так, будто это сайт для собственного бизнеса — с полной отдачей и вниманием к деталям.»
+      </div>
+      <a href="#contact" class="btn-primary" style="align-self:flex-start">Поговорим о проекте →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACT -->
+<section id="contact">
+  <div class="cta-box reveal">
+    <div class="section-tag" style="display:inline-block;margin-bottom:20px">Готов к работе</div>
+    <h2>Начнём ваш<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">проект сегодня?</span></h2>
+    <p>Расскажите о задаче — и я подготовлю конкретное предложение с ценой и сроками в течение 24 часов. Без лишних слов.</p>
+    <div class="cta-btns">
+      <a href="https://t.me/ваш_username" target="_blank" class="cta-link cta-tg">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.93 3.18L2.35 10.91c-1.33.53-1.32 1.27-.24 1.6l4.87 1.52 1.89 5.73c.23.64.11.89.8.89.52 0 .75-.25 1.05-.54l2.51-2.44 4.93 3.63c.91.5 1.56.24 1.79-.84l3.24-15.25c.33-1.34-.51-1.95-1.26-1.63z" fill="currentColor"/></svg>
+        Telegram
+      </a>
+      <a href="https://wa.me/77xxxxxxxxx" target="_blank" class="cta-link cta-wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.91-2.19-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.22 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.57-.35z" fill="currentColor"/><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.89L2 22l5.27-1.24C8.66 21.6 10.29 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.57 0-3.04-.4-4.32-1.1l-.31-.18-3.13.74.74-3.07-.2-.32C4.42 14.96 4 13.52 4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8z" fill="currentColor"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:ваш@email.com" class="cta-link cta-email">✉ Email</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 Матвей — Дизайн & Разработка сайтов · Шымкент, Казахстан</p>
+  <p style="margin-top:8px;font-size:12px">Сделано с ❤ и Liquid Glass UI</p>
+</footer>
+
+<script>
+  // Mobile menu
+  const burger = document.getElementById('burgerBtn');
+  const menu = document.getElementById('mobileMenu');
+  const close = document.getElementById('closeMenu');
+  burger.addEventListener('click', () => menu.classList.add('open'));
+  close.addEventListener('click', () => menu.classList.remove('open'));
+  function closeMobileMenu() { menu.classList.remove('open'); }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) { el.target.classList.add('visible'); observer.unobserve(el.target); }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) { nav.style.background = 'rgba(6,8,18,0.9)'; }
+    else { nav.style.background = 'rgba(10,10,20,0.7)'; }
+  });
+</script>
+</body>
+</html>
